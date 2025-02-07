@@ -1,0 +1,70 @@
+services:
+  load-balancer:
+    image: anroe/nginx-geoip2
+    container_name: load-balancer
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/load-balancer/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/load-balancer/GeoLite2-Country.mmdb:/usr/share/nginx/GeoLite2-Country.mmdb
+    networks:
+      - nginx-network
+
+  nginx-usa:
+    image: nginx:latest
+    container_name: nginx-usa
+    ports:
+      - "3000:80"
+    volumes:
+      - ./nginx/usa/nginx.conf:/etc/nginx/conf.d/default.conf
+      - ./nginx/usa/index.html:/usr/share/nginx/html/index.html
+    networks:
+      - nginx-network
+
+  nginx-usa-2:
+    image: nginx:latest
+    container_name: nginx-usa-2
+    ports:
+      - "3001:80"
+    volumes:
+      - ./nginx/usa/nginx.conf:/etc/nginx/conf.d/default.conf
+      - ./nginx/usa/index.html:/usr/share/nginx/html/index.html
+    networks:
+      - nginx-network
+
+  nginx-gb:
+    image: nginx:latest
+    container_name: nginx-gb
+    ports:
+      - "3002:80"
+    volumes:
+      - ./nginx/gb/nginx.conf:/etc/nginx/conf.d/default.conf
+      - ./nginx/gb/index.html:/usr/share/nginx/html/index.html
+    networks:
+      - nginx-network
+
+  nginx-general:
+    image: nginx:latest
+    container_name: nginx-general
+    ports:
+      - "3003:80"
+    volumes:
+      - ./nginx/general/nginx.conf:/etc/nginx/conf.d/default.conf
+      - ./nginx/general/index.html:/usr/share/nginx/html/index.html
+    networks:
+      - nginx-network
+
+  nginx-backup:
+    image: nginx:latest
+    container_name: nginx-backup
+    ports:
+      - "3004:80"
+    volumes:
+      - ./nginx/backup/nginx.conf:/etc/nginx/conf.d/default.conf
+      - ./nginx/backup/index.html:/usr/share/nginx/html/index.html
+    networks:
+      - nginx-network
+
+networks:
+  nginx-network:
+    driver: bridge
